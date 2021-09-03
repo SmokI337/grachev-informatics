@@ -1,4 +1,4 @@
-def convert_base(num, from_base=10, to_base=10):
+def convert_base(num, from_base=10, to_base=10, again=False):
     try:
         from_base = int(from_base)
     except:
@@ -65,12 +65,13 @@ def convert_base(num, from_base=10, to_base=10):
                 n += 1
                 if frac_tmp == '0':
                     return str(res)
-            res, s = res.split('.')
-            i = (s + s).find(s, 1, -1)
-            if i != -1:
-                res += '.(' + s[:i] + ')'
-            else:
-                res += '.' + s + ' (округлено до 10 символов)'
+            if again == False:
+                res, s = res.split('.')
+                i = (s + s).find(s, 1, -1)
+                if i != -1:
+                    res += '.(' + s[:i] + ')'
+                else:
+                    res += '.' + s + ' (округлено до 10 символов)'
         return str(res)
 
     elif from_base != 10 and to_base == 10:
@@ -90,7 +91,7 @@ def convert_base(num, from_base=10, to_base=10):
         return str(res)
 
     elif from_base != 10 and to_base != 10:
-        return convert_base(convert_base(num, from_base, 10), 10, to_base)
+        return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
 
 
 #num, from_base, to_base = input().split()
