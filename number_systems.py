@@ -24,6 +24,9 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     elif ',' in num:
         num, frac = num.split(',')
 
+    if frac == '0':
+        frac = ''
+
     for i in num:
         if i.isalpha():
             i = ord(i) - 55
@@ -45,8 +48,10 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     if from_base < 2 or from_base > 36 or to_base < 2 or to_base > 36:
         return 'Ошибка: основание системы счисления не может быть меньше 2 или больше 36'
 
-    if from_base == to_base:
+    if from_base == to_base and frac != '':
         return num + '.' + frac
+    elif from_base == to_base and frac == '':
+        return num
 
     if from_base == 10 and to_base != 10:
         res, num = '', int(num)
@@ -66,7 +71,6 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                 res += chr(55 + tmp) if tmp % to_base > 9 else str(tmp)
                 n += 1
                 if frac_tmp == '0':
-                    print(res)
                     return str(res)
             if not again:
                 res, s = res.split('.')
