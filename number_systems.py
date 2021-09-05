@@ -46,7 +46,7 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         return 'Ошибка: основание системы счисления не может быть меньше 2 или больше 36'
 
     if from_base == to_base:
-        return num
+        return num + '.' + frac
 
     if from_base == 10 and to_base != 10:
         res, num = '', int(num)
