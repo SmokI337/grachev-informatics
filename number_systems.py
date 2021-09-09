@@ -104,12 +104,14 @@ def convert_base(num, from_base=10, to_base=10, again=False):
             return str(res)
 
     elif from_base != 10 and to_base == 10:
+        # by koste444ka
         res, num = 0, str(num)
         for i in range(len(num)):
             if num[len(num) - 1 - i].isalpha():
                 res += (ord(num[len(num) - 1 - i]) - 55) * (from_base ** i)
             else:
                 res += int(num[len(num) - 1 - i]) * (from_base ** i)
+        # by koste444ka
 
         if frac != '':
             for i in range(0, len(frac)):
