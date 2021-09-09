@@ -18,11 +18,21 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     if num.count('.') > 1 or num.count(',') > 1:
         return 'Ошибка: введите корректную дробь'
 
+    isNegative = False
+    if num.count('-') > 1:
+        return 'Ошибка: число содержит недопустимые для системы счисления символы'
+    elif float(num) < 0:
+        num = num.replace('-', '')
+        isNegative = True
+
     frac = ''
     if '.' in num:
         num, frac = num.split('.')
     elif ',' in num:
         num, frac = num.split(',')
+
+    if num == '0':
+        return '0'
 
     if frac == '0':
         frac = ''
@@ -49,9 +59,15 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         return 'Ошибка: основание системы счисления не может быть меньше 2 или больше 36'
 
     if from_base == to_base and frac != '':
-        return num + '.' + frac
+        if isNegative:
+            return '-' + num + '.' + frac
+        else:
+            return num + '.' + frac
     elif from_base == to_base and frac == '':
-        return num
+        if isNegative:
+            return '-' + num
+        else:
+            return num
 
     if from_base == 10 and to_base != 10:
         res, num = '', int(num)
@@ -71,7 +87,10 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                 res += chr(55 + tmp) if tmp % to_base > 9 else str(tmp)
                 n += 1
                 if frac_tmp == '0':
-                    return str(res)
+                    if isNegative:
+                        return '-' + str(res)
+                    else:
+                        str(res)
             if not again:
                 res, s = res.split('.')
                 i = (s + s).find(s, 1, -1)
@@ -79,7 +98,10 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                     res += '.(' + s[:i] + ')'
                 else:
                     res += '.' + s + ' (округлено до 10 символов)'
-        return str(res)
+        if isNegative:
+            return '-' + str(res)
+        else:
+            return str(res)
 
     elif from_base != 10 and to_base == 10:
         res, num = 0, str(num)
@@ -102,10 +124,16 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                     res += '.(' + s[:i] + ')'
                 else:
                     res += '.' + s
-        return str(res)
+        if isNegative:
+            return '-' + str(res)
+        else:
+            return str(res)
 
     elif from_base != 10 and to_base != 10:
-        return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
+        if isNegative:
+            return '-' + convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
+        else:
+            return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
 
 # num, from_base, to_base = input().split()
 # print(convert_base(num, from_base, to_base))
