@@ -1,3 +1,15 @@
+def exponent(n):
+    if not 'e' in str(n):
+        return n
+    num = str(n)
+    check = int(num[num.index('e') + 2: len(num)])
+    num = num[0: num.index('e')]
+    if '.' in num:
+        a, b = num.split('.')
+        check += len(b)
+    return '{:0.{check}f}'.format(n, check=check)
+
+
 def convert_base(num, from_base=10, to_base=10, again=False):
     try:
         from_base = int(from_base)
@@ -9,7 +21,7 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     except:
         return 'Ошибка: введите корректное значение системы'
 
-    num = str(num)
+    num = str(exponent(num))
 
     for i in num:
         if i.islower():
@@ -31,11 +43,11 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     elif ',' in num:
         num, frac = num.split(',')
 
-    if num == '0':
-        return '0'
-
     if frac == '0':
         frac = ''
+
+    if num == '0' and frac == '':
+        return '0'
 
     for i in num:
         if i.isalpha():
@@ -76,28 +88,33 @@ def convert_base(num, from_base=10, to_base=10, again=False):
             res = str(plus) + res
             num //= to_base
         if frac != '':
-            res += '.'
+            if res == '':
+                res += '0.'
+            else:
+                res += '.'
             frac = float('0.' + frac)
             n = 0
-            while n < 10:
+            while True:
                 frac *= to_base
-                tmp, frac_tmp = str(frac).split('.')
+                tmp, frac_tmp = str(exponent(frac)).split('.')
                 frac = float('0.' + frac_tmp)
                 tmp = int(tmp)
                 res += chr(55 + tmp) if tmp % to_base > 9 else str(tmp)
-                n += 1
                 if frac_tmp == '0':
                     if isNegative:
                         return '-' + str(res)
                     else:
                         str(res)
+                if n > 10 and int(res.split('.')[1]) != 0:
+                    break
+                n += 1
             if not again:
                 res, s = res.split('.')
                 i = (s + s).find(s, 1, -1)
                 if i != -1:
                     res += '.(' + s[:i] + ')'
                 else:
-                    res += '.' + s + ' (округлено до 10 символов)'
+                    res += '.' + s + ' (округлено)'
         if isNegative:
             return '-' + str(res)
         else:
@@ -137,5 +154,6 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         else:
             return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
 
-# num, from_base, to_base = input().split()
-# print(convert_base(num, from_base, to_base))
+
+#num, from_base, to_base = input().split()
+#print(convert_base(num, from_base, to_base))
