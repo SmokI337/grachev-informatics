@@ -30,10 +30,13 @@ def convert_base(num, from_base=10, to_base=10, again=False):
     if num.count('.') > 1 or num.count(',') > 1:
         return 'Ошибка: введите корректную дробь'
 
+    if ',' in num:
+        num = num.replace(',', '.')
+
     isNegative = False
     if num.count('-') > 1:
         return 'Ошибка: число содержит недопустимые для системы счисления символы'
-    elif float(num) < 0:
+    elif '-' in num:
         num = num.replace('-', '')
         isNegative = True
 
@@ -101,13 +104,15 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                 tmp = int(tmp)
                 res += chr(55 + tmp) if tmp % to_base > 9 else str(tmp)
                 if frac_tmp == '0':
+                    res = str(res).strip('0')
                     if isNegative:
-                        return '-' + str(res)
+                        return '-' + res
                     else:
-                        str(res)
-                if n > 10 and int(res.split('.')[1]) != 0:
+                        return res
+                if n > 10 and res.split('.')[1] != '0':
                     break
                 n += 1
+            res = str(res).strip('0')
             if not again:
                 res, s = res.split('.')
                 i = (s + s).find(s, 1, -1)
@@ -116,19 +121,17 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                 else:
                     res += '.' + s + ' (округлено)'
         if isNegative:
-            return '-' + str(res)
+            return '-' + res
         else:
-            return str(res)
+            return res
 
     elif from_base != 10 and to_base == 10:
-        # by koste444ka
         res, num = 0, str(num)
         for i in range(len(num)):
             if num[len(num) - 1 - i].isalpha():
                 res += (ord(num[len(num) - 1 - i]) - 55) * (from_base ** i)
             else:
                 res += int(num[len(num) - 1 - i]) * (from_base ** i)
-        # by koste444ka
 
         if frac != '':
             for i in range(0, len(frac)):
@@ -136,17 +139,18 @@ def convert_base(num, from_base=10, to_base=10, again=False):
                     res += (ord(frac[i]) - 55) * (from_base ** -(i + 1))
                 else:
                     res += int(frac[i]) * (from_base ** -(i + 1))
+            res = str(res).strip('0')
             if not again:
-                res, s = str(res).split('.')
+                res, s = res.split('.')
                 i = (s + s).find(s, 1, -1)
                 if i != -1:
                     res += '.(' + s[:i] + ')'
                 else:
                     res += '.' + s
         if isNegative:
-            return '-' + str(res)
+            return '-' + res
         else:
-            return str(res)
+            return res
 
     elif from_base != 10 and to_base != 10:
         if isNegative:
@@ -155,5 +159,5 @@ def convert_base(num, from_base=10, to_base=10, again=False):
             return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
 
 
-#num, from_base, to_base = input().split()
-#print(convert_base(num, from_base, to_base))
+from_base, to_base, num = input().split()
+print(convert_base(num, from_base, to_base))
