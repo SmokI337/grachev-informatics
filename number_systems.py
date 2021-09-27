@@ -27,12 +27,6 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         if i.islower():
             num = num.replace(i, i.upper())
 
-    if num.count('.') > 1 or num.count(',') > 1:
-        return 'Ошибка: введите корректную дробь'
-
-    if ',' in num:
-        num = num.replace(',', '.')
-
     isNegative = False
     if num.count('-') > 1:
         return 'Ошибка: число содержит недопустимые для системы счисления символы'
@@ -40,11 +34,23 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         num = num.replace('-', '')
         isNegative = True
 
+    if num.count('.') > 1 or num.count(',') > 1:
+        return 'Ошибка: введите корректную дробь'
+
+    if ',' in num:
+        num = num.replace(',', '.')
+
     frac = ''
     if '.' in num:
         num, frac = num.split('.')
-    elif ',' in num:
-        num, frac = num.split(',')
+
+    if frac.count('(') == 1 and frac.count(')') == 1:
+        copy = frac[frac.find('(') + 1: frac.find(')')]
+        frac = frac.replace('(', '').replace(')', '').replace(copy, '')
+        while len(frac) < 60:
+            frac += copy
+    elif frac.count('(') > 1 or frac.count(')') > 1:
+        return 'Ошибка: введите корректную дробь'
 
     if frac == '0':
         frac = ''
@@ -158,6 +164,5 @@ def convert_base(num, from_base=10, to_base=10, again=False):
         else:
             return convert_base(convert_base(num + '.' + frac, from_base, 10, True), 10, to_base)
 
-
-from_base, to_base, num = input().split()
-print(convert_base(num, from_base, to_base))
+# from_base, to_base, num = input().split()
+# print(convert_base(num, from_base, to_base))
